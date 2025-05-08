@@ -1,12 +1,31 @@
-# React + Vite
+# React Grid Color App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Detta projekt är ett frontendgränssnitt byggt i **React** där användaren kan generera färgade kvadrater i ett rutnät. Varje kvadrat får en slumpmässig färg (olika från föregående), och klick på en knapp lägger till en ny kvadrat i spiralordning. Alla ändringar sparas till ett backend-API byggt i **.NET**.
 
-Currently, two official plugins are available:
+## Funktioner
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Genererar ett rutnät av färgade kvadrater.
+- Kvadrater placeras i spiralform runt mitten.
+- Varje ny kvadrat får en slumpmässig färg, inte samma som föregående.
+- Rutnätet kan återställas med en knapp.
+- Rutnätets tillstånd sparas till och hämtas från ett .NET API.
 
-## Expanding the ESLint configuration
+## API
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Frontend-appen kommunicerar med ett API på följande endpoint: http://localhost:7049/api/grid
+
+### API-endpoints
+
+- `GET /api/grid` – Hämtar sparat rutnät (tvådimensionell array med färger eller null).
+- `POST /api/grid` – Skickar ett uppdaterat rutnät till servern.
+
+### Filöversikt
+
+- `App.jsx` – Hanterar rutnätslogik, färggenerering, klickhändelser och API-anrop.
+- `App.css` – Ansvarar för layout, grid och knappdesign.
+
+### Möjlig vidareutveckling
+
+- Lägg till animationer när rutnätet uppdateras.
+- Låt användaren välja färgpalett.
+- Spara flera rutnät per användare med sessions eller inloggning.
