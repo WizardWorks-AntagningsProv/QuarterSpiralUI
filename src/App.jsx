@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"; // Importerar React-hooks för statehantering och sidladdningslogik
+  import { useState, useEffect } from "react"; // Importerar React-hooks för statehantering och sidladdningslogik
 import "./App.css"; // CSS-styling för layout och grid
 
 // 🎨 Lista med färger som används för att färgsätta rutor
@@ -98,24 +98,51 @@ function App() {
   };
 
   // 🟢 Hämtar det sparade rutnätet från API när appen laddas
-  const loadGridFromApi = async () => {
-    try {
-      const res = await fetch(apiUrl); // Gör GET-anrop till backend
-      if (!res.ok) return;
+const loadGridFromApi = async () => {
+  console.log("1. Försöker hämta rutnät från API...");
+  try {
+    const res = await fetch(apiUrl);
+    console.log("2. Fick svar från API med status:", res.status);
 
-      const data = await res.json(); // Avkoda JSON-svaret till array
-      if (!Array.isArray(data)) return;
-
-      setGridData(data); // Spara hela arrayen med rutor i React-state
-
-      // Hitta största rad/kolumn och sätt storlek +1 för att täcka alla rutor
-      const maxRow = Math.max(0, ...data.map((d) => d.row));
-      const maxCol = Math.max(0, ...data.map((d) => d.col));
-      setGridSize(Math.max(maxRow, maxCol) + 1);
-    } catch (err) {
-      console.warn("⚠️ Kunde inte läsa rutnät:", err);
+    if (!res.ok) {
+      console.error("API svarade inte OK. Status:", res.status);
+      return;
     }
-  };
+
+    const data = await res.json();
+    console.log("3. Tolkade JSON-data:", data);
+
+    if (!Array.isArray(data)) {
+      console.error("Mottagen data är inte en array.", data);
+      return;
+    }
+
+    if (data.length === 0) {
+      console.log("Rutnätet är tomt, inget att ladda.");
+      setGridData([]);
+      setGridSize(1);
+      return;
+    }
+
+    // 💡 Här normaliserar vi datan direkt
+    const normalizedData = data.map(item => ({
+      row: item.row ?? item.Row,
+      col: item.col ?? item.Col,
+      color: item.color ?? item.Color
+    }));
+
+    setGridData(normalizedData);
+
+    // 💡 OBS: INTE deklarera maxRow tidigare! Endast här:
+    const maxRowVal = Math.max(0, ...normalizedData.map(d => d.row));
+    const maxColVal = Math.max(0, ...normalizedData.map(d => d.col));
+    setGridSize(Math.max(maxRowVal, maxColVal) + 1);
+
+    console.log("5. Laddning klar!");
+  } catch (err) {
+    console.error("❌ ETT ALLVARLIGT FEL UPPSTOD I loadGridFromApi:", err);
+  }
+};
 
   useEffect(() => {
     loadGridFromApi(); // Körs automatiskt när komponenten mountas (sidladdning)
